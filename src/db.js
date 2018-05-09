@@ -8,6 +8,7 @@ const db = new Sequelize(process.env.DB_DATABASE, process.env.DB_USERNAME, proce
     dialect: 'postgres'
 });
 
+// db.sync({force: true})
 db.sync()
     .then(() => {
         console.log('DB synced');

@@ -28,6 +28,8 @@ const User = db.define('users',{
         defaultValue: null,
     },
     password: Sequelize.STRING(80)
+}, {
+    timestamps: false
 });
 
 export default User;
