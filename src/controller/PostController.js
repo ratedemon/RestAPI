@@ -2,6 +2,7 @@ import Post from '../model/post';
 import env from 'dotenv';
 import User from '../model/user';
 import db from '../db';
+import fs from 'fs';
 
 env.config();
 
@@ -186,6 +187,38 @@ export default class PostController {
         }catch(e){
             console.log(e);
             ctx.status = 403;
+        }
+    }
+
+    async removeImage(ctx){
+        try{
+            const post = await Post.findOne({
+                where: {
+                    id: ctx.params.id,
+                    user_id: ctx.request.body.id
+                }
+            });
+
+            if(!post){
+                return ctx.status = 404;
+            }
+
+            const image = await fs.unlink(post.image);
+
+            const postImage = await Post.update({
+                image: null
+            },{
+                where: {
+                    id: ctx.params.id,
+                    user_id: ctx.request.body.id
+                }
+            });
+            console.log(image);
+
+            return ctx.status = 200;
+        }catch(e){
+            console.log(e);
+            return ctx.status = 403;
         }
     }
 }

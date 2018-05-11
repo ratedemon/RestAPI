@@ -31,6 +31,7 @@ router.get('/item/:id', verifyAuth, postController.getPost);
 router.get('/item', verifyAuth, searchPostValidation, postController.searchPost);
 router.delete('/item/:id', verifyAuth, postValidation, postController.deletePost);
 router.post('/item/:id/image', verifyAuth, upload.single('avatar'), postController.uploadImage);
+router.delete('/item/:id/image', verifyAuth, postController.removeImage);
 
 export function routes() {
     return router.routes();
