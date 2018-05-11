@@ -2,12 +2,13 @@ import Joi from 'joi';
 
 const defaultSchema = Joi.object().keys({
     id: Joi.number().integer(),
+    user_id: Joi.number().integer(),
     title: Joi.string().min(3).max(255),
     description: Joi.string().min(3),
     image: Joi.string().uri({allowRelative: true}),
     price: Joi.number(),
     order_by: Joi.string().valid('price', 'createdAt'),
-    order_type: Joi.string().valid('asc', 'desc')
+    order_type: Joi.string().valid('asc', 'desc'),
 });
 
 export async function postValidation(ctx, next) {

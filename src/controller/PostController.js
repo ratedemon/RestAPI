@@ -39,6 +39,75 @@ export default class PostController {
         }
     }
 
+    async updatePost(ctx){
+        try {
+            let postData = {};
+            if(!!ctx.request.body.title){
+                postData.title = ctx.request.body.title;
+            }
+            if(!!ctx.request.body.description){
+                postData.description = ctx.request.body.description;
+            }
+            const post = await Post.update(postData,{
+                where: {
+                    id: ctx.params.id,
+                    user_id: ctx.request.body.id
+                }
+            });
+            if(post.includes(0)){
+                return ctx.status = 404;
+            }
+            const updatedPost = await Post.findOne({
+                where: {
+                    id: ctx.params.id,
+                    user_id: ctx.request.body.id
+                },
+                include: [{
+                    model: User,
+                    as: 'user',
+                    attributes: {
+                        exclude: ['password']
+                    }
+                }]
+            });
+            return ctx.body = updatedPost;
+        }catch(e){
+            const errors = [
+                {
+                    field: e.errors[0].path,
+                    message: e.errors[0].message
+                }
+            ];
+            ctx.body = errors;
+            return ctx.status = 422;
+        }
+    }
+
+    async deletePost(ctx){
+        try{
+            const post = await Post.destroy({
+                where: {
+                    id: ctx.params.id,
+                    user_id: ctx.request.body.id
+                }
+            });
+            if(!post){
+                return ctx.status = 404;
+            }
+            return ctx.status = 200;
+        }catch(e){
+            console.log(e);
+            const errors = [
+                {
+                    field: e.errors[0].path,
+                    message: e.errors[0].message
+                }
+            ];
+            ctx.body = errors;
+            return ctx.status = 422;
+        }
+    }
+
     async getPost(ctx) {
         try {
             const post = await Post.findOne({
@@ -72,7 +141,9 @@ export default class PostController {
             }
             for(let key in ctx.request.query){
                 if(key != 'order_type' && key != 'order_by'){
-                    ctx.request.query[key] = {$like : `%${ctx.request.query[key]}%`};
+                    if(key != 'user_id'){
+                        ctx.request.query[key] = {$like : `%${ctx.request.query[key]}%`};
+                    }
                 }else{
                     delete ctx.request.query[key];
                 }
@@ -92,6 +163,29 @@ export default class PostController {
         }catch(e){
             console.log(e);
             return ctx.status = 403;
+        }
+    }
+
+    async uploadImage(ctx){
+        try {
+            const { file } = ctx.req;
+
+            const image = await Post.update({
+                image: file.path
+            }, {
+                where: {
+                    id: ctx.params.id,
+                    user_id: ctx.request.body.id
+                }
+            });
+            if(image.includes(0)){
+                return ctx.status = 404;
+            }
+
+            return ctx.status = 200;
+        }catch(e){
+            console.log(e);
+            ctx.status = 403;
         }
     }
 }
