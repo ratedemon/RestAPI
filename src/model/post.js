@@ -10,15 +10,33 @@ const Post = db.define('posts', {
     },
     title: {
         type: Sequelize.STRING,
-        notNull: true
+        notNull: true,
+        allowNull: false,
+        validate: {
+            len:{
+                args: [3,255],
+                msg: "Title length must be between 3 and 255 characters"
+            }
+        }
     },
     description:{
         type: Sequelize.TEXT,
-        notNull: true
+        notNull: true,
+        allowNull: false,
+        validate: {
+            notEmpty: {
+                args: true,
+                msg: "Description is required"
+            }
+        }
     },
     image:{
         type: Sequelize.STRING,
         defaultValue: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg'
+    },
+    price: {
+        type: Sequelize.DOUBLE(11),
+        defaultValue: 0
     },
     user_id: {
         notNull: true,

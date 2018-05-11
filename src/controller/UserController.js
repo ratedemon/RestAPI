@@ -164,7 +164,9 @@ export default class UserController {
     }
 
     async searchUsers(ctx){
-        // console.log(ctx.request.query.name, !!ctx.request.query.email);
+        for(let key in ctx.request.query){
+            ctx.request.query[key] = {$like : `%${ctx.request.query[key]}%`};
+        }
         const users = await User.findAll({
             where: ctx.request.query
         });
