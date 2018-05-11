@@ -32,6 +32,10 @@ const Post = db.define('posts', {
 }, {
     timestamps: true,
     updatedAt: false
-});
+}, {underscored: true});
+
+// Post.hasOne(User, {foreignKey: 'id', as: 'user', onDelete: 'cascade'});
+// Project.hasMany(Task, {foreignKey: 'project_id', onDelete: 'cascade', as: 'ProjectTasks'});
+Post.belongsTo(User, {foreignKey: 'user_id', as: 'user', onDelete: 'cascade'});
 
 export default Post;
