@@ -32,7 +32,8 @@ const Post = db.define('posts', {
     },
     image:{
         type: Sequelize.STRING,
-        defaultValue: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg'
+        notNull: false,
+        allowNull: true
     },
     price: {
         type: Sequelize.DOUBLE(11),

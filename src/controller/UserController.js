@@ -143,6 +143,7 @@ export default class UserController {
                     message: e.errors[0].message
                 });
             }
+            console.log(e);
             ctx.body = errors;
             return ctx.status = 422;
         }
